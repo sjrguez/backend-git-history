@@ -4,7 +4,7 @@ import { BranchService } from './branch.service';
 @Controller('branch')
 export class BranchController {
 
-    constructor( private branchService: BranchService){ }
+    constructor(private branchService: BranchService){ }
     
     @Get('/')
     getAll() {
@@ -15,6 +15,6 @@ export class BranchController {
     getByName(
         @Param('branchName') branchName: string
     ){
-        return this.branchService.getByName(branchName);
+        return this.branchService.getBranchByName(branchName);
     }
 }

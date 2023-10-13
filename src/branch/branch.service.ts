@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { OctokitService } from 'src/common/services/octokit.service';
 import { BranchI } from './branch.interface';
 import { BranchMapper } from './branch.mapper'
-import { BranchResponseDto } from './dto/branchResponse.dto';
+import { BranchResponseDto } from './dto/branch-response.dto';
 
 @Injectable()
 export class BranchService {
@@ -26,7 +26,7 @@ export class BranchService {
 
             const branches: BranchI[] = result.data
             
-            return branches.map(b => BranchMapper.toDto(b))
+            return branches as any
         } catch (error) {
             throw new InternalServerErrorException("There was a problem getting branches")
         }
@@ -44,7 +44,7 @@ export class BranchService {
                 },
               })
 
-            return BranchMapper.toDto(result.data)
+            return result.data
         } catch (error) {
             if(error.status === 404) {
                 throw  new NotFoundException("Branch was not Found or was deleted")
