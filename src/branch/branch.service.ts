@@ -33,7 +33,7 @@ export class BranchService {
     }
 
 
-    async getByName(branchName: string): Promise<BranchResponseDto> {
+    async getBranchByName(branchName: string): Promise<BranchResponseDto> {
         try {
              const result: any = await this.octokitService.octokit.request('GET /repos/{owner}/{repo}/branches/{branch}', {
                 owner: this.owner,
@@ -46,7 +46,7 @@ export class BranchService {
 
             return BranchMapper.toDto(result.data)
         } catch (error) {
-            if(error.status) {
+            if(error.status === 404) {
                 throw  new NotFoundException("Branch was not Found or was deleted")
             }
 
