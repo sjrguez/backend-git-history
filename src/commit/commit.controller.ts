@@ -1,5 +1,6 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { CommitService } from './commit.service';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('commit')
 export class CommitController {
@@ -8,9 +9,12 @@ export class CommitController {
     
     @Get('/branch/:branchSha')
     getAllCommits(
-        @Param('branchSha') branchSha: string
+        @Param('branchSha') branchSha: string,
+        @Query() paginationDto: PaginationDto
     ){
-        return this.commitService.getAllCommits(branchSha);
+        const { page = 1, limit = 10 } = paginationDto
+
+        return this.commitService.getAllCommits(branchSha, {page, limit});
     }
 
 

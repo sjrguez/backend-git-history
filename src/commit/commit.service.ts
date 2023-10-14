@@ -4,19 +4,25 @@ import { OctokitService } from 'src/common/services/octokit.service';
 import { CommitInfo } from './commit.interface';
 import { CommitMapper } from './commit.mapper';
 import { CommitResponseDto } from './dto/commit-response.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { PaginationService } from 'src/common/services/pagination.service';
 
 @Injectable()
 export class CommitService {
 
     owner: string;
     repoName: string;
-    constructor(private octokitService: OctokitService, private configService: ConfigService){
+    constructor(
+        private octokitService: OctokitService,
+        private configService: ConfigService,
+        private paginationService: PaginationService
+    ){
         this.owner = configService.get<string>("PROJECT_OWNER")
         this.repoName = configService.get<string>("REPOSITORY_NAME")
     }
 
 
-    async getAllCommits(branchSha: string): Promise<CommitResponseDto[]> {
+    async getAllCommits(branchSha: string, {page, limit}: PaginationDto): Promise<{data:CommitResponseDto[], totalItems: number}> {
         try {
             const result: any = await this.octokitService.octokit.request('GET /repos/{owner}/{repo}/commits', {
                 owner: this.owner,
@@ -27,9 +33,10 @@ export class CommitService {
                 }
               })
 
-              const commits: CommitInfo[] = result.data;
-
-              return commits.map(commit => CommitMapper.toDto(commit));
+              const { pageData, totalItems} = this.paginationService.paginateData<CommitInfo>(result.data, page, limit) ;
+              const data = pageData.map(commit => CommitMapper.toDto(commit))
+              
+              return { data, totalItems};
         } catch (error) {
             console.log({error})
             if(error.status === 404) {
