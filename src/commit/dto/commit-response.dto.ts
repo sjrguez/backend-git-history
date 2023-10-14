@@ -1,9 +1,9 @@
 export class CommitResponseDto {
     message: string;
     sha: string;
-    autor: string;
-    github_link: string;
+    author: string;
+    githubLink: string;
     date: Date
-    fileAfected: number
+    fileAfected?: number
 }
 
