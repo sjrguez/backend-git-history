@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OctokitService } from 'src/common/services/octokit.service';
-import { CommitI, CommitInfo } from './commit.interface';
+import { CommitInfo } from './commit.interface';
 import { CommitMapper } from './commit.mapper';
+import { CommitResponseDto } from './dto/commit-response.dto';
 
 @Injectable()
 export class CommitService {
@@ -15,7 +16,7 @@ export class CommitService {
     }
 
 
-    async getAllCommits(branchSha: string) {
+    async getAllCommits(branchSha: string): Promise<CommitResponseDto[]> {
         try {
             const result: any = await this.octokitService.octokit.request('GET /repos/{owner}/{repo}/commits', {
                 owner: this.owner,
@@ -30,15 +31,16 @@ export class CommitService {
 
               return commits.map(commit => CommitMapper.toDto(commit));
         } catch (error) {
+            console.log({error})
             if(error.status === 404) {
                 throw  new NotFoundException("Branch was not Found or was deleted")
             }
 
-            throw  new NotFoundException("There was a problem getting all commits")
+            throw  new InternalServerErrorException("There was a problem getting all commits")
         }
     }
 
-    async getCommitBySha(commitRef: string) {
+    async getCommitBySha(commitRef: string): Promise<CommitResponseDto> {
         try {
             const result: any = await this.octokitService.octokit.request('GET /repos/{owner}/{repo}/commits/{ref}', {
                 owner: this.owner,
@@ -55,7 +57,7 @@ export class CommitService {
                 throw  new NotFoundException("Commit was not Found or was deleted")
             }
 
-            throw  new NotFoundException("There was a problem getting commit by sha")
+            throw  new InternalServerErrorException("There was a problem getting commit by sha")
         }
     }
 
