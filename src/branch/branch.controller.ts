@@ -1,5 +1,6 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { BranchService } from './branch.service';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('branch')
 export class BranchController {
@@ -7,8 +8,12 @@ export class BranchController {
     constructor(private branchService: BranchService){ }
     
     @Get('/')
-    getAll() {
-        return this.branchService.getAll();
+    getAll(
+        @Query() paginationDto: PaginationDto
+    ) {
+        
+        const { page = 1, limit = 10 } = paginationDto
+        return this.branchService.getAll({page, limit});
     }
 
     @Get(':branchName')
