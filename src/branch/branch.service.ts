@@ -26,7 +26,7 @@ export class BranchService {
 
             const branches: BranchI[] = result.data
             
-            return branches as any
+            return branches.map(b => BranchMapper.toDto(b))
         } catch (error) {
             throw new InternalServerErrorException("There was a problem getting branches")
         }
@@ -44,7 +44,7 @@ export class BranchService {
                 },
               })
 
-            return result.data
+            return BranchMapper.toDto(result.data)
         } catch (error) {
             if(error.status === 404) {
                 throw  new NotFoundException("Branch was not Found or was deleted")
