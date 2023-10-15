@@ -1,7 +1,10 @@
+import { ApiProperty } from "@nestjs/swagger";
+import {BranchDto} from './branch.dto'
+
 export class BranchResponseDto {
-    name: string;
-    sha: string;
-    githubLink: string;
-    protected: boolean
+    @ApiProperty({ type: [BranchDto]})
+    data: BranchDto[];
+    @ApiProperty()
+    totalItems: number
 }
 

@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { OctokitService } from 'src/common/services/octokit.service';
 import { BranchI } from './branch.interface';
 import { BranchMapper } from './branch.mapper'
-import { BranchResponseDto } from './dto/branch-response.dto';
+import { BranchDto, BranchResponseDto} from './dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { PaginationService } from 'src/common/services/pagination.service';
 
@@ -20,7 +20,7 @@ export class BranchService {
         this.repoName = configService.get<string>("REPOSITORY_NAME")
     }
 
-    async getAll({page, limit}: PaginationDto): Promise<{data:BranchResponseDto[], totalItems: number}> {
+    async getAll({page, limit}: PaginationDto): Promise<BranchResponseDto> {
         try {
             const result: any =  await this.octokitService.octokit.request(`GET /repos/{owner}/{repo}/branches`, {
                 owner: this.owner,
@@ -40,7 +40,7 @@ export class BranchService {
     }
 
 
-    async getBranchByName(branchName: string): Promise<BranchResponseDto> {
+    async getBranchByName(branchName: string): Promise<BranchDto> {
         try {
              const result: any = await this.octokitService.octokit.request('GET /repos/{owner}/{repo}/branches/{branch}', {
                 owner: this.owner,
