@@ -1,9 +1,10 @@
+import { ApiProperty } from "@nestjs/swagger";
+import { CommitDto } from "./commit.dto";
+
 export class CommitResponseDto {
-    message: string;
-    sha: string;
-    author: string;
-    githubLink: string;
-    date: Date
-    fileAfected?: number
+    @ApiProperty({ type: [CommitDto]})
+    data: CommitDto[];
+    @ApiProperty()
+    totalItems: number
 }
 

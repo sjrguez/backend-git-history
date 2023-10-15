@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { OctokitService } from 'src/common/services/octokit.service';
 import { CommitInfo } from './commit.interface';
 import { CommitMapper } from './commit.mapper';
-import { CommitResponseDto } from './dto/commit-response.dto';
+import { CommitDto,CommitResponseDto } from './dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { PaginationService } from 'src/common/services/pagination.service';
 
@@ -22,7 +22,7 @@ export class CommitService {
     }
 
 
-    async getAllCommits(branchSha: string, {page, limit}: PaginationDto): Promise<{data:CommitResponseDto[], totalItems: number}> {
+    async getAllCommits(branchSha: string, {page, limit}: PaginationDto): Promise<CommitResponseDto> {
         try {
             const result: any = await this.octokitService.octokit.request('GET /repos/{owner}/{repo}/commits', {
                 owner: this.owner,
@@ -47,7 +47,7 @@ export class CommitService {
         }
     }
 
-    async getCommitBySha(commitRef: string): Promise<CommitResponseDto> {
+    async getCommitBySha(commitRef: string): Promise<CommitDto> {
         try {
             const result: any = await this.octokitService.octokit.request('GET /repos/{owner}/{repo}/commits/{ref}', {
                 owner: this.owner,

@@ -1,9 +1,9 @@
 import { CommitInfo } from './commit.interface';
-import { CommitResponseDto } from './dto/commit-response.dto';
+import { CommitDto } from './dto';
 
 export class CommitMapper {
-  public static toDto(repoInfo: CommitInfo): CommitResponseDto {
-    const repoDto = new CommitResponseDto();
+  public static toDto(repoInfo: CommitInfo): CommitDto {
+    const repoDto = new CommitDto();
     repoDto.message = repoInfo.commit.message;
     repoDto.sha = repoInfo.sha;
     repoDto.date = repoInfo.commit.committer.date;
